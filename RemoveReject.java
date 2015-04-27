@@ -34,8 +34,8 @@ public class RemoveReject {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
-		        e.printStackTrace();
-	      }
+	    e.printStackTrace();
+	}
     }
     
     public static boolean selectInputLine(double x) {
