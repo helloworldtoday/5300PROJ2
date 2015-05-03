@@ -9,7 +9,6 @@ import org.apache.hadoop.util.*;
 import org.apache.hadoop.io.Text;
 
 public class SimpleReduce extends Reducer<Text, Text, Text, Text> {
-// TODO reduce function
 		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 			
 			double damping = 0.85;
