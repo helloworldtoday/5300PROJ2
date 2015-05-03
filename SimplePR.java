@@ -31,8 +31,8 @@ public class SimplePR {
 			job.setInputFormatClass(TextInputFormat.class);
 			job.setOutputFormatClass(TextOutputFormat.class);
 			
-		    String inputPath = i == 0 ? "input" : "stage" + i;
-		    String outputPath = "stage" + (i + 1);
+			String inputPath = i == 0 ? "input" : "stage" + i;
+			String outputPath = "stage" + (i + 1);
 		    
 			FileInputFormat.addInputPath(job, new Path(inputPath));
 			FileOutputFormat.setOutputPath(job, new Path(outputPath));       
@@ -41,8 +41,8 @@ public class SimplePR {
 			double residualAvg = job.getCounter().findCounter("Counter.RESIDUAL").getValue();
 			double resAvg = (residualAvg / base) / numNode;
 			
-        	DecimalFormat four = new DecimalFormat("#0.0000");
-        	System.out.println("Iteration " + i + "; " + "Residual " + four.format(resAvg));
+			DecimalFormat four = new DecimalFormat("#0.0000");
+			System.out.println("Iteration " + i + "; " + "Residual " + four.format(resAvg));
         	
 			job.getCounters().findCounter("Counter.RESIDUAL").setValue(0L);
 		}
