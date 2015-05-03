@@ -8,3 +8,5 @@ RemoveReject.java: remove some data by function in instruction
 CombineOutgping.java: combine destination nodes.
 
 SimplePR.java: simple computation of pageRank. (hasn't tested on AWS)
+
+addBlockID.java: add blockID. format: blockID nodeID oldPageRank outgoingList
