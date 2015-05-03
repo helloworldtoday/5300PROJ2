@@ -6,39 +6,40 @@ import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.util.*;
+import org.apache.hadoop.io.Text;
 
-
-	public class SimpleMap extends Mapper<LongWritable, Text, Text, Text> {
-		// TODO map function
-		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-			// format: source, oldPR, list of destinations(maybe no outgoing)
-			String perLine = value.toString().trim();
-	  	  	String[] substring = perLine.split("\\s+");
-	  	  	
-	  	  	Text node = new Text(substring[0]);
-	  	  	double pageRankOld = Double.parseDouble(substring[1]);
-	  	  	int degrees = 0;
-	  	  	String outgoing = ""; 
-	  	  	
-	  	  	if (substring.length > 2) { // have outgoing
-	  	  		String[] outgoings = substring[2].split(",");
-	  	  		degrees = outgoings.length;
-	  	  		outgoing = substring[2];
-	  	  	}
-	  	  	
-	  	  	Text mykey = new Text(node);
-	  	  	Text value1 = new Text("pageRank;" + String.valueOf(pageRankOld) + ";" + outgoing);
-	  	  	context.write(mykey, value1);
-	  	  	
-	  	  	if (outgoing != "") {
-	  	  		double pageRankNew = Double.parseDouble(substring[1]);
-	  	  		Text value2 = new Text(String.valueOf(pageRankNew)); 
-	  	  		String[] outgoingAll = outgoing.split(",");
-	  	  		
-				for (String item: outgoingAll) {
-					mykey = new Text(item);
-					context.write(mykey, value2);
+public class SimpleReduce extends Reducer<Text, Text, Text, Text> {
+		// TODO reduce function
+		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+			
+			double damping = 0.85;
+			double pageRankAll = 0.0;
+			double pageRankNew = 0.0;
+			double pageRankOld = 0.0;
+			double residual = 0.0;
+			double randomJump = 1 - damping;
+			
+			String outgoing = "";
+			String output = "";
+			
+			for (Text val : values) {
+				String[] array = val.toString().split(";");
+				if (array[0].equals("pageRank")) {
+					pageRankOld = Double.parseDouble(array[1]);
+					if (array.length > 2) {
+						outgoing = array[2];
+					} 
+				} else {
+					double pageRankPer = new Double(Double.parseDouble(array[0]));
+					pageRankAll += pageRankPer;
 				}
-	  	  	}			
+			} 
+			pageRankNew = randomJump / SimplePR.numNode + (damping * pageRankAll);
+			residual = Math.abs(pageRankOld - pageRankNew) / pageRankNew;
+			long residualPer = (long) Math.ceil(residual * SimplePR.base);
+			context.getCounter(Counter.RESIDUAL).increment(residualPer);
+			
+			Text value = new Text(pageRankNew + " " + outgoing);
+			context.write(key, value);
 		}
-	}
+}
