@@ -19,10 +19,11 @@ public class SimplePR {
 	static int base = 1000000;
 	
 	public static void main(String[] args) throws Exception {
-		// TODO main function		
+		
 		for (int i = 0; i < iteration; i++) {
 			Configuration conf = new Configuration();
 			Job job = new Job(conf, "pageRank_" + i);
+			
 			// job setting
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(Text.class);      
@@ -32,6 +33,7 @@ public class SimplePR {
 			job.setOutputFormatClass(TextOutputFormat.class);
 			job.setJarByClass(SimplePR.class);
 			
+			// inputPath is outputPath in last iteration (from second iteration)
 			String inputPath = i == 0 ? "input" : "stage" + (i - 1);
 			String outputPath = "stage" + i;
 		    
@@ -39,12 +41,15 @@ public class SimplePR {
 			FileOutputFormat.setOutputPath(job, new Path(outputPath));       
 			job.waitForCompletion(true);
 			
+			// calculate average residual and store it in Counter
 			double residualAvg = job.getCounters().findCounter(Counter.RESIDUAL).getValue();
 			double resAvg = (residualAvg / base) / numNode;
 			
+			// keep six decimal digits
 			DecimalFormat six = new DecimalFormat("#0.000000");
 			System.out.println("Iteration " + i + "; " + "Residual " + six.format(resAvg));
         	
+        		// reset residual
 			job.getCounters().findCounter(Counter.RESIDUAL).setValue(0L);
 		}
 	}	
