@@ -6,3 +6,5 @@ WebPageScanner.java: capture the data from web pages "http://edu-cornell-cs-cs53
 RemoveReject.java: remove some data by function in instruction
 
 CombineOutgping.java: combine destination nodes.
+
+SimplePR.java: simple computation of pageRank. (hasn't tested on AWS)
