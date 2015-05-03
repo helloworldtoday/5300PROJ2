@@ -29,7 +29,7 @@ public class CombineOutgoing {
         			writer.println(combinedLine.substring(0, combinedLine.length() - 1));
           		  	System.out.println(combinedLine);
         			i++;
-        			combinedLine = String.valueOf(i) + " " + eight.format(pr0) + " ";
+        			combinedLine = String.valueOf(i) + " " + eight.format(pr0) + " " + substring[1] + ",";
         		}
         	}
         	scanner.close();
