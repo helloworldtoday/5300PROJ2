@@ -6,11 +6,12 @@ import org.apache.hadoop.conf.*;
 import org.apache.hadoop.io.*;
 import org.apache.hadoop.mapreduce.*;
 import org.apache.hadoop.util.*;
+import org.apache.hadoop.io.Text;
 
 public class SimpleReduce extends Reducer<Text, Text, Text, Text> {
 		// TODO reduce function
 		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
-			Text list = new Text();
+			
 			double damping = 0.85;
 			double pageRankAll = 0.0;
 			double pageRankNew = 0.0;
@@ -22,7 +23,7 @@ public class SimpleReduce extends Reducer<Text, Text, Text, Text> {
 			String output = "";
 			
 			for (Text val : values) {
-				String[] array = list.toString().split(";");
+				String[] array = val.toString().split(";");
 				if (array[0].equals("pageRank")) {
 					pageRankOld = Double.parseDouble(array[1]);
 					if (array.length > 2) {
@@ -38,7 +39,7 @@ public class SimpleReduce extends Reducer<Text, Text, Text, Text> {
 			long residualPer = (long) Math.ceil(residual * SimplePR.base);
 			context.getCounter(Counter.RESIDUAL).increment(residualPer);
 			
-			Text value = new Text(output = pageRankNew + " " + " " + outgoing);
+			Text value = new Text(pageRankNew + " " + outgoing);
 			context.write(key, value);
 		}
-	}
+}
