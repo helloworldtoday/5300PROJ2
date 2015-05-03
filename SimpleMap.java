@@ -20,7 +20,10 @@ public class SimpleReduce extends Reducer<Text, Text, Text, Text> {
 			
 		String outgoing = "";
 		String output = "";
-			
+		
+		// split outgoing list
+		// read old PageRank & outgoing list
+		// or calculate new PageRank (unit)	
 		for (Text val : values) {
 			String[] array = val.toString().split(";");
 			if (array[0].equals("pageRank")) {
@@ -33,11 +36,13 @@ public class SimpleReduce extends Reducer<Text, Text, Text, Text> {
 				pageRankAll += pageRankPer;
 			}
 		} 
+		// sum new PageRank for each node, calculate residual for each node
 		pageRankNew = randomJump / SimplePR.numNode + (damping * pageRankAll);
 		residual = Math.abs(pageRankOld - pageRankNew) / pageRankNew;
 		long residualPer = (long) Math.ceil(residual * SimplePR.base);
 		context.getCounter(Counter.RESIDUAL).increment(residualPer);
-			
+		
+		// format: key: node; value: new_pageRank outgoing_list	
 		Text value = new Text(pageRankNew + " " + outgoing);
 		context.write(key, value);
 	}
