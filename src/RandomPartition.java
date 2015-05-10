@@ -12,6 +12,10 @@ public class RandomPartition {
 	
     public static void addID(String fileName) {
         try {
+        	int[] group = new int[68];
+        	for (int i = 0; i < 68; i++) {
+        		group[i] = 0;
+        	}
         	File file = new File(fileName);
 	        Scanner scanner = new Scanner(file);
 	        PrintWriter writer = new PrintWriter("/Users/shaoke/Dropbox/5300proj2/blockAdded.txt", "UTF-8");
@@ -22,13 +26,18 @@ public class RandomPartition {
 	
 	            long nodeID = Long.parseLong(substring[0]);
 	            k = (3*nodeID + 6) % 68;
+	            group[(int) k]++;
 	            String newLine = k + " " + oldLine;
 	            writer.println(newLine);
-	            System.out.println(newLine);
 	        }
 	        scanner.close();
 	        writer.close();
 	        System.out.println("OKAY");
+	        System.out.println(group[0]);
+	        for (int j = 1; j < 68; j++) {
+	        	group[j] += group[j - 1];
+	        	System.out.println(group[j]);
+	        }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
