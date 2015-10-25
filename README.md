@@ -70,7 +70,7 @@ How To Run Block Map Reduce on EMR
 Filter Parameters
 -----------------
 
-Compute filter parameters for netID sx88
+Compute filter parameters for netID sx77
  double fromNetID = 0.77;
  double rejectMin = 0.9 \* fromNetID; (0.693)
  double rejectLimit = rejectMin + 0.01; (0.703)
